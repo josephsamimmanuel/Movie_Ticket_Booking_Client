@@ -4,22 +4,29 @@ import Button from '../../components/Button'
 import { Link } from 'react-router-dom'
 import { loginUser } from '../../apicalls/users'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { showLoader, hideLoader } from '../../redux/loaderslice'
 
 function Login() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const handleLogin = async (values) => {
     try {
+      dispatch(showLoader())
       const response = await loginUser(values)
       if (response.success) {
+        dispatch(hideLoader())
         message.success(response.message)
         localStorage.setItem('token', response.token)
         navigate('/')
       }
       else {
+        dispatch(hideLoader())
         message.error(response.message)
       }
     }
     catch (error) {
+      dispatch(hideLoader())
       message.error(error.message)
     }
   }

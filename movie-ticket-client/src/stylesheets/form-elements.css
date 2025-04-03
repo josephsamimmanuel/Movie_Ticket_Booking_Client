@@ -10,4 +10,8 @@ input:focus{
     border-color: #002E2A;
 }
 
+.cursor-pointer{
+    cursor: pointer;
+}
+
 
