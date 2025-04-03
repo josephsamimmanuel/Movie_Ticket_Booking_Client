@@ -1,12 +1,32 @@
-import React from 'react'
-import { Divider, Form } from 'antd'
+import React, { useEffect } from 'react'
+import { Divider, Form, message } from 'antd'
 import Button from '../../components/Button'
 import { Link } from 'react-router-dom'
+import { registerUser } from '../../apicalls/users'
+import { useNavigate } from 'react-router-dom'
 
 function Register() {
-  const handleRegister = (values) => {
-    console.log('Successfully registered', values)
+  const navigate = useNavigate()
+  const handleRegister = async (values) => {
+    try {
+      const response = await registerUser(values)
+      if (response.success) {
+        message.success(response.message)
+        navigate('/login')
+      } else {
+        message.error(response.message || 'Registration failed')
+      }
+    } catch (error) {
+      message.error(error.message || 'Something went wrong')
+    }
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      navigate('/')
+    }
+  }, [navigate])
   
   return (
     <div className='flex justify-center items-center h-screen bg-primary'>
