@@ -2,11 +2,24 @@ import React from 'react'
 import { Button, Col, Form, message, Modal, Row, Select } from 'antd'
 import { useDispatch } from 'react-redux'
 import { hideLoader, showLoader } from '../../redux/loaderSlice'
-import { addMovie } from '../../apicalls/movies'
-
+import { addMovie, getAllMovies, updateMovie } from '../../apicalls/movies'
+import moment from 'moment'
+import { setAddMovie, setEditMovie, setGetAllMovies } from '../../redux/moviesSlice'
 function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, setSelectedMovie, formType }) {
     const dispatch = useDispatch()
     const [form] = Form.useForm()
+
+    if(selectedMovie){
+        form.setFieldsValue({
+            ...selectedMovie,
+            releaseDate: moment(selectedMovie.releaseDate).format('YYYY-MM-DD')
+        })
+    }
+
+    const fetchMovies = async () => {
+        const response = await getAllMovies()
+        dispatch(setGetAllMovies(response.data))
+    }
 
     const handleSubmit = async (values) => {
         try{
@@ -21,6 +34,15 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
 
             if(formType === 'add'){
                 response = await addMovie(formattedValues)
+                console.log(response)
+                fetchMovies()
+                dispatch(setAddMovie(response.data))
+            }
+            else{
+                response = await updateMovie(selectedMovie._id, formattedValues)
+                console.log(response)
+                fetchMovies()
+                dispatch(setEditMovie(response.data))
             }
             if(response.success){
                 dispatch(hideLoader())
@@ -38,6 +60,7 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
             message.error(error.message)
         }
     }
+
     return (
         <div>
             <Modal
@@ -45,6 +68,7 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
                 open={showMovieFormModel}
                 onCancel={() => {
                     setShowMovieFormModel(false)
+                    setSelectedMovie(null)
                     form.resetFields()
                 }}
                 footer={null}
@@ -56,7 +80,8 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
                     form={form}
                     initialValues={{
                         language: 'English',
-                        genre: 'Comedy'
+                        genre: 'Comedy',
+                        ...selectedMovie
                     }}
                 >
                     <Row gutter={16}>
@@ -110,6 +135,7 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
                     <div className='flex justify-end gap-2'>
                         <Button type='default' onClick={() => {
                             setShowMovieFormModel(false)
+                            setSelectedMovie(null)
                             form.resetFields()
                         }}>
                             Cancel
