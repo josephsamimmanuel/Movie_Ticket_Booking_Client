@@ -1,13 +1,18 @@
-input{
+input, textarea, select{
     height: 40px;
     border-radius: 5px;
     border: 2px solid #e0e0e0;
     width: 100%;
 }
 
-input:focus{
+input:focus, textarea:focus{
     outline: none;
     border-color: #002E2A;
+}
+
+textarea{
+    min-height: 100px;
+    padding: 10px;
 }
 
 .cursor-pointer{

@@ -52,11 +52,25 @@ function ProtectedRoute({ children }) {
             <div className='layout p-1'>
                 <div className="header bg-primary flex justify-between items-center p-2">
                     <div>
-                        <h1 className='text-white text-2xl font-bold'>CineBook</h1>
+                        <h1 className='text-white text-2xl font-bold cursor-pointer'
+                            onClick={() => {
+                                navigate('/')
+                            }}
+                        >CineBook</h1>
                     </div>
                     <div className='bg-white p-1 rounded-md flex justify-between items-center gap-2'>
                         <i class="ri-shield-user-line text-xl"></i>
-                        <h1 className='text-sm'>{users?.name}</h1>
+                        <h1 className='text-sm underline cursor-pointer'
+                            onClick={() => {
+                                console.log(users)
+                                if (users.isAdmin) {
+                                    navigate('/admin')
+                                }
+                                else {
+                                    navigate('/profile')
+                                }
+                            }}
+                        >{users?.name}</h1>
                         <i className="ri-logout-circle-r-line text-xl cursor-pointer"
                             onClick={() => {
                                 localStorage.removeItem('token')
