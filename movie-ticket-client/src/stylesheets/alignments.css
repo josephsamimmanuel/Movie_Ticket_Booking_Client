@@ -171,6 +171,10 @@
     gap: 30px;
 }
 
+.uppercase{
+    text-transform: uppercase;
+}
+
 
 
 
