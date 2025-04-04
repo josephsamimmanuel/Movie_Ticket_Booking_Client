@@ -10,6 +10,11 @@ export const getAllTheatres = async () => {
     return response.data
 }
 
+export const getAllTheatresByUserId = async (userId) => {
+    const response = await axiosInstance.get(`/api/theatres/get-all-theatres-by-user-id/${userId}`)
+    return response.data
+}
+
 export const updateTheatre = async (theatreId, theatreData) => {
     const response = await axiosInstance.put(`/api/theatres/update-theatre/${theatreId}`, theatreData)
     return response.data
@@ -19,6 +24,22 @@ export const deleteTheatre = async (theatreId) => {
     const response = await axiosInstance.delete(`/api/theatres/delete-theatre/${theatreId}`)
     return response.data
 }
+
+export const acceptTheatre = async (theatreId, isActive) => {
+    const response = await axiosInstance.put(`/api/theatres/accept-theatre/${theatreId}`, { isActive })
+    return response.data
+}
+
+export const ignoreTheatre = async (theatreId, isActive) => {
+    const response = await axiosInstance.put(`/api/theatres/ignore-theatre/${theatreId}`, { isActive })
+    return response.data
+}
+
+
+
+
+
+
 
 
 

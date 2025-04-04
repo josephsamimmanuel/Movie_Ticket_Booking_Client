@@ -7,6 +7,7 @@ const theatreListSlice = createSlice({
         editTheatre: null,
         deleteTheatre: null,
         getAllTheatres: null,
+        getAllTheatresByUserId: null,
     },
     reducers: {
         setAddTheatre: (state, action) => {
@@ -21,8 +22,11 @@ const theatreListSlice = createSlice({
         setGetAllTheatres: (state, action) => {
             state.getAllTheatres = action.payload;
         },
+        setGetAllTheatresByUserId: (state, action) => {
+            state.getAllTheatresByUserId = action.payload;
+        },
     },
 });
 
-export const { setAddTheatre, setEditTheatre, setDeleteTheatre, setGetAllTheatres } = theatreListSlice.actions;
+export const { setAddTheatre, setEditTheatre, setDeleteTheatre, setGetAllTheatres, setGetAllTheatresByUserId } = theatreListSlice.actions;
 export default theatreListSlice.reducer;

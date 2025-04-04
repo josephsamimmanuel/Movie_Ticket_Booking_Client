@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Col, Form, message, Modal, Row, Select } from 'antd'
 import { useDispatch } from 'react-redux'
 import { hideLoader, showLoader } from '../../redux/loaderSlice'
-import { addMovie, getAllMovies, updateMovie } from '../../apicalls/movies'
+import { addMovie, updateMovie } from '../../apicalls/movies'
 import moment from 'moment'
 import { setAddMovie, setEditMovie, setGetAllMovies } from '../../redux/moviesSlice'
 function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, setSelectedMovie, formType }) {
@@ -15,12 +15,6 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
             releaseDate: moment(selectedMovie.releaseDate).format('YYYY-MM-DD')
         })
     }
-
-    const fetchMovies = async () => {
-        const response = await getAllMovies()
-        dispatch(setGetAllMovies(response.data))
-    }
-
     const handleSubmit = async (values) => {
         try{
             let response = null;
@@ -35,14 +29,14 @@ function MoviesForm({ showMovieFormModel, setShowMovieFormModel, selectedMovie, 
             if(formType === 'add'){
                 response = await addMovie(formattedValues)
                 console.log(response)
-                fetchMovies()
                 dispatch(setAddMovie(response.data))
+                dispatch(setGetAllMovies(response?.movieList))
             }
             else{
                 response = await updateMovie(selectedMovie._id, formattedValues)
                 console.log(response)
-                fetchMovies()
                 dispatch(setEditMovie(response.data))
+                dispatch(setGetAllMovies(response?.movieList))
             }
             if(response.success){
                 dispatch(hideLoader())

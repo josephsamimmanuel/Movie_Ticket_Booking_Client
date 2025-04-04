@@ -1,62 +1,58 @@
 import { Button, Form, Input, message, Modal } from 'antd'
-import React, { useEffect } from 'react'
-import { addTheatre, getAllTheatres, updateTheatre } from '../../apicalls/theatre'
-import { useSelector } from 'react-redux'
+import React from 'react'
+import { addTheatre, updateTheatre } from '../../apicalls/theatre'
 import { useDispatch } from 'react-redux'
-import { setAddTheatre, setEditTheatre, setGetAllTheatres } from '../../redux/theatreListSlice'
+import { useSelector } from 'react-redux'
+import { setAddTheatre, setEditTheatre, setGetAllTheatresByUserId } from '../../redux/theatreListSlice'
+import { showLoader, hideLoader } from '../../redux/loaderSlice'
 
 function TheatreForm({ showTheatreFormModel, setShowTheatreFormModel, selectedTheatre, setSelectedTheatre, formType, setFormType }) {
-
-  const redux = useSelector(state => state)
-  console.log(redux)
   const dispatch = useDispatch()
-
+  const user = useSelector(state => state?.users)
   const handleCancel = () => {
     setShowTheatreFormModel(false)
     setSelectedTheatre(null)
   }
-
-  useEffect(() => {
-    fetchTheatres()
-  }, [])
-
-  const fetchTheatres = async () => {
-    const response = await getAllTheatres()
-    if (response.success) {
-      dispatch(setGetAllTheatres(response.data))
-    }
-  }
   const handleSubmit = async (values) => {
+    values.createdBy = user._id
     try {
+      dispatch(showLoader())
       if (formType === 'add') {
         const response = await addTheatre(values)
         if (response.success) {
+          dispatch(hideLoader())
           dispatch(setAddTheatre(response))
-          // Refresh the theatre list after addition
-          fetchTheatres()
+          dispatch(setGetAllTheatresByUserId(response?.theatreList))
           message.success(response.message)
           setShowTheatreFormModel(false)
           setSelectedTheatre(null)
           setFormType('add')
         }
+        else{
+          dispatch(hideLoader())
+          message.error(response.message)
+        }
       } else {
         const response = await updateTheatre(selectedTheatre._id, values)
         if (response.success) {
+          dispatch(hideLoader())
           dispatch(setEditTheatre(response))
-          // Refresh the theatre list after editing
-          fetchTheatres()
+          dispatch(setGetAllTheatresByUserId(response?.theatreList))
           message.success(response.message)
           setShowTheatreFormModel(false)
           setSelectedTheatre(null)
           setFormType('edit')
         }
+        else{
+          dispatch(hideLoader())
+          message.error(response.message)
+        }
       }
     } catch (error) {
+      dispatch(hideLoader())
       message.error(error.message)
     }
   }
-
-
 
   return (
     <div>

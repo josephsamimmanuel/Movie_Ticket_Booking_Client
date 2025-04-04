@@ -9,10 +9,13 @@ import { showLoader, hideLoader } from '../../redux/loaderSlice'
 import { useDispatch } from 'react-redux'
 import { setDeleteMovie, setGetAllMovies } from '../../redux/moviesSlice'
 import { useSelector } from 'react-redux'
+import ConfirmationModal from '../../components/ConfirmationModal'
 function MoviesList() {
   const [showMovieFormModel, setShowMovieFormModel] = useState(false)
   const [selectedMovie, setSelectedMovie] = useState(null)
   const [formType, setFormType] = useState('add')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [movieDeleteId, setMovieDeleteId] = useState(null)
   const dispatch = useDispatch()
   const movies = useSelector((state) => state?.movies?.getAllMovies)
 
@@ -43,16 +46,29 @@ function MoviesList() {
     setSelectedMovie(movie)
   }
 
+  const handleDeleteClick = (movieId) => {
+    setMovieDeleteId(movieId)
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteMovieConfirm = async () => {
+    if (movieDeleteId) {
+      await handleDeleteMovie(movieDeleteId)
+      setShowDeleteModal(false)
+      setMovieDeleteId(null)
+    }
+  }
+
   const handleDeleteMovie = async (movieId) => {
     try {
       dispatch(showLoader())
       const response = await deleteMovie(movieId)
       console.log(response)
       dispatch(setDeleteMovie(response.message))
+      dispatch(setGetAllMovies(response?.movieList))
       if (response.success) {
         dispatch(hideLoader())
         message.success(response.message)
-        fetchMovies()
       }
       else {
         dispatch(hideLoader())
@@ -115,7 +131,7 @@ const columns = [
       return (
         <div className='flex gap-2'>
           <Button title='Edit' variant='outlined' onClick={() => handleEditMovie(record)} />
-          <Button title='Delete' variant='outlined' onClick={() => handleDeleteMovie(record._id)} />
+          <Button title='Delete' variant='outlined' onClick={() => handleDeleteClick(record._id)} />
         </div>
       )
     }
@@ -139,6 +155,16 @@ return (
         formType={formType}
       />
     )}
+    <ConfirmationModal
+      isOpen={showDeleteModal}
+      onClose={() => setShowDeleteModal(false)}
+      onConfirm={handleDeleteMovieConfirm}
+      title="Delete Movie"
+      message="Are you sure you want to delete this movie?"
+      confirmText="Delete"
+      cancelText="Cancel"
+      confirmButtonType="danger"
+    />
   </div>
 )
 }
