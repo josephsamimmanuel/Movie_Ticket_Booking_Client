@@ -35,6 +35,13 @@ export const ignoreTheatre = async (theatreId, isActive) => {
     return response.data
 }
 
+export const getAllUniqueTheatresForAMovieOnADate = async (movie, date) => {
+    const response = await axiosInstance.get(`/api/theatres/get-all-unique-theatres-for-a-movie/${movie}/${date}`)
+    return response.data
+}
+
+
+
 
 
 

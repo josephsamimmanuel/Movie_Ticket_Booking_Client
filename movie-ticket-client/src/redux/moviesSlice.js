@@ -7,6 +7,7 @@ const moviesSlice = createSlice({
         editMovie: null,
         deleteMovie: null,
         getAllMovies: null,
+        getMovieById: null,
     },
     reducers: {
         setAddMovie: (state, action) => {
@@ -21,9 +22,12 @@ const moviesSlice = createSlice({
         setGetAllMovies: (state, action) => {
             state.getAllMovies = action.payload;
         },
+        setGetMovieById: (state, action) => {
+            state.getMovieById = action.payload;
+        },
     },
 });
 
-export const { setAddMovie, setEditMovie, setDeleteMovie, setGetAllMovies } = moviesSlice.actions;
+export const { setAddMovie, setEditMovie, setDeleteMovie, setGetAllMovies, setGetMovieById } = moviesSlice.actions;
 export default moviesSlice.reducer;
 

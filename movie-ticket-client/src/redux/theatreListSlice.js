@@ -8,6 +8,7 @@ const theatreListSlice = createSlice({
         deleteTheatre: null,
         getAllTheatres: null,
         getAllTheatresByUserId: null,
+        getAllUniqueTheatresForAMovieOnADate: null,
     },
     reducers: {
         setAddTheatre: (state, action) => {
@@ -25,8 +26,11 @@ const theatreListSlice = createSlice({
         setGetAllTheatresByUserId: (state, action) => {
             state.getAllTheatresByUserId = action.payload;
         },
+        setGetAllUniqueTheatresForAMovieOnADate: (state, action) => {
+            state.getAllUniqueTheatresForAMovieOnADate = action.payload;
+        },
     },
 });
 
-export const { setAddTheatre, setEditTheatre, setDeleteTheatre, setGetAllTheatres, setGetAllTheatresByUserId } = theatreListSlice.actions;
+export const { setAddTheatre, setEditTheatre, setDeleteTheatre, setGetAllTheatres, setGetAllTheatresByUserId, setGetAllUniqueTheatresForAMovieOnADate } = theatreListSlice.actions;
 export default theatreListSlice.reducer;

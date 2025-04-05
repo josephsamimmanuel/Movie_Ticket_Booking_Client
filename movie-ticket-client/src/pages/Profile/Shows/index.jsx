@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Row, Col, Table, message, Select } from 'antd'
+import { Form, Input, Modal, Row, Col, Table, message, Select, DatePicker, TimePicker } from 'antd'
 import React, { useState, useEffect } from 'react'
 import Button from '../../../components/Button'
 import moment from 'moment'
@@ -18,10 +18,10 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
     const dispatch = useDispatch()
     const shows = useSelector((state) => state?.shows?.getShowsByTheatre)
     const movies = useSelector((state) => state?.movies?.getAllMovies)
+    const [form] = Form.useForm();
 
     const reduxState = useSelector((state) => state?.movies?.getAllMovies)
     console.log(reduxState)
-    console.log('theatre',theatre);
     
 
     // Fetch movies when the form view is opened
@@ -72,12 +72,24 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
     }
 
     const handleEditClick = (showId,record) => {
-        setEditRecord(record)
-        setShow('edit')
-        setView('form')
+        // Format the record data to ensure date and time are moment objects
+        const formattedRecord = {
+            ...record,
+            date: record.date ? moment(record.date) : null,
+            showTime: record.showTime ? moment(record.showTime, 'HH:mm') : null
+        };
+        setEditRecord(formattedRecord);
+        setShow('edit');
+        setView('form');
     }
-    console.log(editRecord);
-    
+
+    // Reset form when switching to Add mode
+    const handleAddClick = () => {
+        setEditRecord(null);
+        setShow('form');
+        setView('form');
+        form.resetFields();
+    }
 
     const handleDeleteShow = async (showId) => {
         try {
@@ -135,7 +147,8 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
         {
             title: 'Available Seats',
             dataIndex: 'availableSeats',
-            key: 'availableSeats'
+            key: 'availableSeats',
+            render: (availableSeats, record) => record.totalSeats - record.bookedSeats
         },
         {
             title: 'Actions',
@@ -153,20 +166,41 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
     const handleAddEditShow = async (values) => {
         try {
             dispatch(showLoader())
-            // Add theatre ID to the show data
-            const showData = {
+            
+            // Extract hours and minutes from the time value
+            let showTime = '';
+            if (values?.showTime) {
+                // Get the time value directly from the form
+                const timeValue = values.showTime;
+                
+                // Use a more reliable approach to extract hours and minutes
+                if (typeof timeValue === 'string') {
+                    // If it's already a string in HH:mm format
+                    showTime = timeValue;
+                } else if (timeValue && typeof timeValue === 'object') {
+                    // If it's a moment object
+                    const hours = timeValue.hours ? timeValue.hours() : timeValue.hour();
+                    const minutes = timeValue.minutes ? timeValue.minutes() : timeValue.minute();
+                    showTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                }
+            }            
+            // Format date and time properly
+            const formattedValues = {
                 ...values,
+                date: values.date ? moment(values.date).format('YYYY-MM-DD') : undefined,
+                showTime: showTime,
                 theatreId: theatre._id
             }
             
-            console.log("Submitting show data:", showData)
             
-            const response = show === 'edit' ? await editShow(showData, editRecord._id) : await createShow(showData)
+            const response = show === 'edit' ? await editShow(formattedValues, editRecord._id) : await createShow(formattedValues)
             
             if (response.success) {
                 message.success(response.message || "Show added successfully")
                 dispatch(setAddShow(response.data))
                 setView('table')
+                setShow('form')
+                setEditRecord(null)
                 dispatch(hideLoader())
             } else {
                 message.error(response.message || "Failed to add show")
@@ -179,24 +213,24 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
         }
     }
 
-    return (
-        <div>
-            <Modal
-                title="Theatre Shows"
-                open={openShowsModel}
-                onCancel={() => setOpenShowsModel(false)}
-                footer={null}
+  return (
+    <div>
+      <Modal
+                title="Shows"
+        open={openShowsModel}
+        onCancel={() => setOpenShowsModel(false)}
+        footer={null}
                 width={1400}
             >
                 <div className='text-primary text-md mb-4'><span className='font-bold'>Theatre:</span> {theatre?.theatreName}</div>
                 <div className='text-primary text-md mb-4'><span className='font-bold'>Address:</span> {theatre?.address}</div>
-                <hr />
+                <hr className='mt-2'/>
                 <div className='flex justify-between mt-1'>
                     <h1 className='text-md uppercase'>
                         {view === 'table' ? 'Shows' : (view !== 'table' && show === 'edit' ? 'Edit Show' : 'Add Shows')}
                     </h1>
                     {view === 'table' && (
-                        <Button variant='outlined' title='Add Shows' onClick={() => setView('form')} />
+                        <Button variant='outlined' title='Add Shows' onClick={handleAddClick} />
                     )}
                 </div>
                 {view === 'table' && (
@@ -204,7 +238,12 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
                 )}
 
                 {view === 'form' && (
-                    <Form layout='vertical' initialValues={editRecord} onFinish={handleAddEditShow}>
+                    <Form 
+                        layout='vertical' 
+                        onFinish={handleAddEditShow} 
+                        form={form}
+                        initialValues={show === 'edit' ? editRecord : {}}
+                    >
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item label='Show Name' name='showName' rules={[{ required: true, message: 'Show Name is required' }]}>
@@ -213,7 +252,38 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
                             </Col>
                             <Col span={12}>
                                 <Form.Item label='Show Time' name='showTime' rules={[{ required: true, message: 'Show Time is required' }]}>
-                                    <Input />
+                                    <TimePicker 
+                                        className='w-full'
+                                        format="HH:mm" 
+                                        minuteStep={5}
+                                        onChange={(time) => {
+                                            form.setFieldsValue({ showTime: time });
+                                        }}
+                                        disabledTime={() => {
+                                            const currentDate = moment();
+                                            const currentHour = currentDate.hour();
+                                            const currentMinute = currentDate.minute();
+                                            
+                                            return {
+                                                disabledHours: () => {
+                                                    // If the selected date is today, disable past hours
+                                                    const selectedDate = form.getFieldValue('date');
+                                                    if (selectedDate && moment(selectedDate).isSame(moment(), 'day')) {
+                                                        return Array.from({ length: currentHour }, (_, i) => i);
+                                                    }
+                                                    return [];
+                                                },
+                                                disabledMinutes: (selectedHour) => {
+                                                    // If the selected date is today and the selected hour is the current hour, disable past minutes
+                                                    const selectedDate = form.getFieldValue('date');
+                                                    if (selectedDate && moment(selectedDate).isSame(moment(), 'day') && selectedHour === currentHour) {
+                                                        return Array.from({ length: currentMinute }, (_, i) => i);
+                                                    }
+                                                    return [];
+                                                }
+                                            };
+                                        }}
+                                    />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -221,7 +291,12 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item label='Date' name='date' rules={[{ required: true, message: 'Date is required' }]}>
-                                    <Input type="date" />
+                                    <DatePicker 
+                                        style={{ width: '100%' }} 
+                                        disabledDate={(current) => {
+                                            return current && current < moment().startOf('day');
+                                        }}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
@@ -250,17 +325,17 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
                         </Row>
                         <Row gutter={16}>
                             <Col span={12}>
-                                <Form.Item label='Available Seats' name='availableSeats' rules={[{ required: true, message: 'Available Seats is required' }]}>
-                                    <Input type="number" />
-                                </Form.Item>
+                                
                             </Col>
                             <Col span={12}>
                                 <div className='flex justify-end mt-4 gap-2'>
                                     <Button variant='outlined' title={show === 'edit' ? 'Edit Show' : 'Add Shows'} type='submit' />
                                     <Button variant='outlined' title='Cancel' onClick={() => {
                                         return (
+                                            setEditRecord(null),
                                             setView('table'),
-                                            setShow('')
+                                            setShow(''),
+                                            form.resetFields()
                                         )
                                     }} />
                                 </div>
@@ -269,9 +344,9 @@ function Shows({ openShowsModel, setOpenShowsModel, theatre }) {
 
                     </Form>
                 )}
-            </Modal>
-        </div>
-    )
+      </Modal>
+    </div>
+  )
 }
 
 export default Shows
