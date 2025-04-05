@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import { setGetAllTheatresByUserId } from '../../redux/theatreListSlice'
 import { showLoader, hideLoader } from '../../redux/loaderSlice'
 import ConfirmationModal from '../../components/ConfirmationModal'
+import Shows from './Shows'
 
 function TheatresList() {
   const [showTheatreFormModel, setShowTheatreFormModel] = useState(false)
@@ -16,6 +17,7 @@ function TheatresList() {
   const [formType, setFormType] = useState('add')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [theatreDeleteId, setTheatreDeleteId] = useState(null)
+  const [openShowsModel, setOpenShowsModel] = useState(false)
   const dispatch = useDispatch()
   const theatreList = useSelector(state => state?.theatreList?.getAllTheatresByUserId)
   const userId = useSelector(state => state?.users?.users._id)
@@ -39,6 +41,11 @@ function TheatresList() {
   const handleDeleteClick = (theatreId) => {
     setTheatreDeleteId(theatreId)
     setShowDeleteModal(true)
+  }
+
+  const handleShowsClick = (record) => {
+    setSelectedTheatre(record)
+    setOpenShowsModel(true)
   }
 
   const handleDeleteConfirm = async () => {
@@ -117,7 +124,7 @@ function TheatresList() {
       key: 'isActive',
       render: (_, record) => (
         <span className={`${record.isActive ? 'text-green-500' : 'text-red-500'}`}>
-          {record.isActive ? 'Active' : 'Pending/Blocked'}
+          {(record.status === 'Rejected' && record.isActive === false) ? 'Inactive' : (record.isActive === true) ? 'Active' : 'Pending/Blocked'}
         </span>
       ),
     },
@@ -127,8 +134,9 @@ function TheatresList() {
       key: 'actions',
       render: (_, record) => (
         <div className='flex gap-2'>
-          <Button variant='outlined' title='Edit' onClick={() => handleEditTheatre(record)} />
+          {(record.isActive === false && record.status === 'Rejected') ? '' : <Button variant='outlined' title='Edit' onClick={() => handleEditTheatre(record)} /> }
           <Button variant='outlined' title='Delete' onClick={() => handleDeleteClick(record._id)} />
+          {record.isActive && <Button variant='outlined' title='Shows' onClick={() => handleShowsClick(record)} />}
         </div>
       )
     }
@@ -150,6 +158,11 @@ function TheatresList() {
         formType={formType}
         setFormType={setFormType}
       />}
+
+      {openShowsModel && <Shows 
+          openShowsModel={openShowsModel} 
+          setOpenShowsModel={setOpenShowsModel} 
+          theatre={selectedTheatre} />}
 
       <ConfirmationModal
         isOpen={showDeleteModal}

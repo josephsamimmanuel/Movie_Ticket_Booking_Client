@@ -94,7 +94,7 @@ function TheaterList() {
       dataIndex: 'isActive',
       key: 'isActive',
       render: (_, record) => (
-        <span className={`${record.isActive ? 'text-green-500' : 'text-red-500'}`}>
+        <span>
           {(record.status === 'Rejected' && record.isActive === false) ? 'Rejected' : (record.isActive === true) ? 'Active' : 'Pending/Blocked'}
         </span>
       ),
@@ -104,16 +104,13 @@ function TheaterList() {
       dataIndex: 'actions',
       key: 'actions',
       render: (_, record) =>  (
-          record.isActive || (record.status === 'Rejected' && record.isActive === false) ? (
-            <div className="flex gap-2">
-            <span>{record.status}</span>
+          
+          <div className="flex items-center gap-2">
+            {record.status === 'Pending' && <Button type="primary" onClick={() => handleAcceptTheatre(record._id, true)}>Accept</Button>}
+            {record.status !== 'Pending' && <span className={`${record.status === 'Rejected' ? 'text-red-500' : 'text-green-500'}`}>{record.status}</span>}
+            {(record.status === 'Pending' || !record.status === 'Rejected' || record.status === 'Approved') && <Button className='bg-red-500 text-white' onClick={() => handleIgnoreTheatre(record._id, false)}>Ignore</Button>}
           </div>
-        ) : (
-          <div className="flex gap-2">
-            <Button type="primary" onClick={() => handleAcceptTheatre(record._id, true)}>Accept</Button>
-            <Button type="danger" onClick={() => handleIgnoreTheatre(record._id, false)}>Ignore</Button>
-          </div>
-        )
+        
       ),
     },
   ]

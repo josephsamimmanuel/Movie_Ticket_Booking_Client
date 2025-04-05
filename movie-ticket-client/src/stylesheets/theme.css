@@ -47,3 +47,19 @@
     border-radius: 6px;
 }
 
+.text-green-500{
+    color: #16a34a;
+}
+
+.text-red-500{
+    color: #dc2626;
+}
+
+.bg-red-500{
+    background-color: #dc2626;
+}
+
+.text-white{
+    color: white;
+}   
+
