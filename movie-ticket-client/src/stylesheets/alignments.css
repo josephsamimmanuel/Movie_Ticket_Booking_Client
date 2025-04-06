@@ -25,6 +25,10 @@
     justify-content: end;
 }
 
+.justify-start{
+    justify-content: start;
+}
+
 .items-center{
     align-items: center;
 }

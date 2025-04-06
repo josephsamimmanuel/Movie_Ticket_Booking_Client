@@ -40,6 +40,11 @@ export const getAllUniqueTheatresForAMovieOnADate = async (movie, date) => {
     return response.data
 }
 
+export const getShowDetails = async (showId, date) => {
+    const response = await axiosInstance.get(`/api/theatres/get-show-details/${showId}/${date}`)
+    return response.data
+}
+
 
 
 

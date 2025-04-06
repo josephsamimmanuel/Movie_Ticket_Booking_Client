@@ -89,7 +89,11 @@ function TheatresForMovies() {
                     <span>{theatre.address}</span>
                     <div className='divider'></div>
                     <div className='flex gap-2 cursor-pointer' >
-                        {[...theatre.shows].sort((a, b) => new Date(a.showTime) - new Date(b.showTime)).map((show) => (
+                        {[...theatre.shows].sort((a, b) => {
+                            const timeA = moment(a.showTime, 'HH:mm');
+                            const timeB = moment(b.showTime, 'HH:mm');
+                            return timeA.diff(timeB);
+                        }).map((show) => (
                             <div key={show._id} className='p-1 card' onClick={() => {
                                 navigate(`/book-show/${id}/${theatre._id}?show=${show._id}&date=${date}`)
                             }}>
