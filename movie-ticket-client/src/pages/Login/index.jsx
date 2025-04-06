@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { loginUser } from '../../apicalls/users'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { showLoader, hideLoader } from '../../redux/loaderslice'
+import { showLoader, hideLoader } from '../../redux/loaderSlice'
 
 function Login() {
   const navigate = useNavigate()
