@@ -13,7 +13,6 @@ const store = configureStore({
         theatreList: theatreListReducer,
         shows: showsReducer,
     },
-    devTools: true,
 });
 
 export default store;
