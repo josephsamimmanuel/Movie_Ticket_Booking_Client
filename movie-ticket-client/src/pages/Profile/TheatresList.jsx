@@ -7,7 +7,7 @@ import { deleteTheatre, getAllTheatresByUserId as getAllTheatresAPI } from '../.
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { setGetAllTheatresByUserId } from '../../redux/theatreListSlice'
-import { showLoader, hideLoader } from '../../redux/loaderSlice'
+import { showLoader, hideLoader } from '../../redux/loader'
 import ConfirmationModal from '../../components/ConfirmationModal'
 import Shows from './Shows'
 

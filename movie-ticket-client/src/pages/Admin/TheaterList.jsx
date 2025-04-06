@@ -4,7 +4,7 @@ import { getAllTheatres } from '../../apicalls/theatre'
 import { useDispatch, useSelector } from 'react-redux'
 import { setGetAllTheatres } from '../../redux/theatreListSlice'
 import { acceptTheatre, ignoreTheatre } from '../../apicalls/theatre'
-import { showLoader, hideLoader } from '../../redux/loaderSlice'
+import { showLoader, hideLoader } from '../redux/loader'
 
 function TheaterList() {
   const dispatch = useDispatch()

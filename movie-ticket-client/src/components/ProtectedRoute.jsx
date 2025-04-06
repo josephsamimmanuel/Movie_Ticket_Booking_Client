@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUsers } from '../redux/usersSlice'
 import { useSelector } from 'react-redux'
-import { showLoader, hideLoader } from '../redux/loaderSlice'
+import { showLoader, hideLoader } from '../redux/loader'
 
 function ProtectedRoute({ children }) {
     const navigate = useNavigate()

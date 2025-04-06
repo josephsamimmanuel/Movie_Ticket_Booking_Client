@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
-import loaderReducer from "./loaderSlice";
+import loaderReducer from "./loader";
 import usersReducer from "./usersSlice";
 import moviesReducer from "./moviesSlice";
 import theatreListReducer from "./theatreListSlice";

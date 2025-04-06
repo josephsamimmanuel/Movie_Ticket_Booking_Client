@@ -4,7 +4,7 @@ import { addTheatre, updateTheatre } from '../../apicalls/theatre'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { setAddTheatre, setEditTheatre, setGetAllTheatresByUserId } from '../../redux/theatreListSlice'
-import { showLoader, hideLoader } from '../../redux/loaderSlice'
+import { showLoader, hideLoader } from '../../redux/loader'
 
 function TheatreForm({ showTheatreFormModel, setShowTheatreFormModel, selectedTheatre, setSelectedTheatre, formType, setFormType }) {
   const dispatch = useDispatch()

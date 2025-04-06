@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { showLoader, hideLoader } from '../../redux/loaderSlice'
+import { showLoader, hideLoader } from '../../redux/loader'
 import { Card, Col, message, Row } from 'antd'
 import { setGetAllMovies } from '../../redux/moviesSlice'
 import { getAllMovies } from '../../apicalls/movies'
