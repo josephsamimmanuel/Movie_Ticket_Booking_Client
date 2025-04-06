@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Col, Form, message, Modal, Row, Select } from 'antd'
 import { useDispatch } from 'react-redux'
-import { hideLoader, showLoader } from '../../redux/loaderSlice'
+import { hideLoader, showLoader } from '../../redux/loader'
 import { addMovie, updateMovie } from '../../apicalls/movies'
 import moment from 'moment'
 import { setAddMovie, setEditMovie, setGetAllMovies } from '../../redux/moviesSlice'
