@@ -1,0 +1,94 @@
+.h-screen{
+    height: 100vh;
+}
+
+.w-screen{
+    width: 100vw;
+}
+
+.w-full{
+    width: 100%;
+}
+
+.text-sm{
+    font-size: 14px;
+}
+
+.text-md{
+    font-size: 16px;
+}
+
+.text-lg{
+    font-size: 18px;
+}
+
+.text-xl{
+    font-size: 20px;
+}
+
+.text-2xl{
+    font-size: 24px;
+}
+
+.text-3xl{
+    font-size: 30px;
+}
+
+.border{
+    border-width: 1px;
+}
+
+.border-primary{
+    border-color: #000;
+}
+
+.font-bold{
+    font-weight: bold;
+}
+/* border to fit the array */
+.arrayBorder{
+    border: 1px solid #ded9d9;
+    border-radius: 5px;
+    padding: 10px;
+    width: fit-content;
+    height: fit-content;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+/* Seat Layout Styles */
+.seat {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+/* Selected seat style */
+.selected-seat {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border-color: #45a049 !important;
+}
+
+/* Booked seat style */
+.booked-seat {
+    background-color: #9e9e9e !important;
+    color: white !important;
+    border-color: #757575 !important;
+    cursor: not-allowed !important;
+}
+
+/* Hover effect for available seats */
+.seat:not(.booked-seat):hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+

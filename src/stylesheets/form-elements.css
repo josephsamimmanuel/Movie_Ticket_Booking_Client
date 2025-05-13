@@ -1,0 +1,32 @@
+input, textarea, select{
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid #e0e0e0;
+    width: 100%;
+}
+
+input:focus, textarea:focus{
+    outline: none;
+    border-color: #002E2A;
+}
+
+textarea{
+    min-height: 100px;
+    padding: 10px;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.theatre-card{
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.divider{
+    border-top: 2px solid #e0e0e0;
+}
+
+
