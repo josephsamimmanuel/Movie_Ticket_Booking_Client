@@ -10,6 +10,11 @@ export const getAllMovies = async () => {
     return response.data
 }
 
+export const autoSearch = async (movieName) => {
+    const response = await axiosInstance.get(`/api/movies/auto-search/${movieName}`)
+    return response.data
+}
+
 export const getMovieById = async (movieId) => {
     const response = await axiosInstance.get(`/api/movies/get-movie/${movieId}`)
     return response.data
